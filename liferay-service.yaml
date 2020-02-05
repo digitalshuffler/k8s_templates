@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-liferay
+  labels:
+    run: my-liferay
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    nodePort: 30000
+  selector:
+    run: my-liferay
+  type: NodePort
