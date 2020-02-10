@@ -1,8 +1,10 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: application-test
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
   annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/configuration-snippet: |
       proxy_set_header X-Content-Type "nosniff";
@@ -10,23 +12,15 @@ metadata:
       proxy_set_header X-XSS-Protection "1; mode=block";
       proxy_set_header X-Frame-Options "SAMEORIGIN";
 spec:
+  tls:
+    - hosts:
+      - hidden.mistery
+      secretName: dashboard-cert
   rules:
-  - host: lab.test
+  - host: hidden.mistery
     http:
       paths:
-      - path: /web/guest
-        backend:
-          serviceName: my-liferay
-          servicePort: 8080
-      - path: /.*(.jsp|.txt|.css|.js|.ico)$
-        backend:
-          serviceName: my-liferay
-          servicePort: 8080
-      - path: /(image|o|combo|c)
-        backend:
-          serviceName: my-liferay
-          servicePort: 8080
       - path: /*
         backend:
-          serviceName: my-nginx
+          serviceName: kubernetes-dashboard
           servicePort: 80
